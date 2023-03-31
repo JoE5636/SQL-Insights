@@ -12,7 +12,7 @@ CONN = PG.connect(dbname: "insights")
 
 def create(table_name, data)
   sql = "INSERT INTO #{table_name} (#{data.keys.join(', ')})
-  VALUES (#{data.values.map { |v| "'#{v.gsub("'", "''")}'" }.join(', ')}) RETURNING *;"
+  VALUES (#{data.values.map { |v| "'#{v}'" }.join(', ')}) RETURNING *;"
 
   result = CONN.exec(sql)
   result[0]
@@ -34,31 +34,32 @@ end
 
 # Leer archivo CSV y crear registros por cada fila
 CSV.foreach(csv_path, headers: true) do |row|
-  author_data = {
-    "name" => row["author_name"],
-    "nationality" => row["author_nationality"],
-    "birthdate" => row["author_birthdate"]
+  restaurant_data = {
+    "name" => row["restaurant_name"],
+    "category" => row["category"],
+    "city" => row["city"],
+    "address" => row["address"]
   }
-  author = find_or_create("authors", author_data, "name")
+  restaurant = create("restaurant", restaurant_data)
 
-  publisher_data = {
-    "name" => row["publisher_name"],
-    "annual_revenue" => row["publisher_annual_revenue"],
-    "founded_year" => row["publisher_founded_year"]
-  }
-  publisher = find_or_create("publishers", publisher_data, "name")
+  # publisher_data = {
+  #   "name" => row["publisher_name"],
+  #   "annual_revenue" => row["publisher_annual_revenue"],
+  #   "founded_year" => row["publisher_founded_year"]
+  # }
+  # publisher = find_or_create("publishers", publisher_data, "name")
 
-  genres_data = { "name" => row["genre"] }
-  genre = find_or_create("genres", genres_data, "name")
+  # genres_data = { "name" => row["genre"] }
+  # genre = find_or_create("genres", genres_data, "name")
 
-  books_data = {
-    "title" => row["title"],
-    "pages" => row["pages"],
-    "author_id" => author["id"],
-    "publisher_id" => publisher["id"]
-  }
-  book = find_or_create("books", books_data, "title")
+  # books_data = {
+  #   "title" => row["title"],
+  #   "pages" => row["pages"],
+  #   "author_id" => author["id"],
+  #   "publisher_id" => publisher["id"]
+  # }
+  # books = create("books", books_data, "title")
 
-  books_genres_data = { "book_id" => book["id"], "genre_id" => genre["id"] }
-  find_or_create("books_genres", books_genres_data)
+  # books_genres_data = { "book_id" => book["id"], "genre_id" => genre["id"] }
+  # find_or_create("books_genres", books_genres_data)
 end
