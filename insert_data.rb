@@ -12,7 +12,7 @@ CONN = PG.connect(dbname: "insights")
 
 def create(table_name, data)
   sql = "INSERT INTO #{table_name} (#{data.keys.join(', ')})
-  VALUES (#{data.values.map { |v| "'#{v}'" }.join(', ')}) RETURNING *;"
+  VALUES (#{data.values.map { |v| "'#{v.gsub("'", "''")}'" }.join(', ')}) RETURNING *;"
 
   result = CONN.exec(sql)
   result[0]
@@ -42,24 +42,33 @@ CSV.foreach(csv_path, headers: true) do |row|
   }
   restaurant = create("restaurant", restaurant_data)
 
-  # publisher_data = {
-  #   "name" => row["publisher_name"],
-  #   "annual_revenue" => row["publisher_annual_revenue"],
-  #   "founded_year" => row["publisher_founded_year"]
-  # }
-  # publisher = find_or_create("publishers", publisher_data, "name")
+  orders_data = {
+     "dish" => row["dish"],
+     "price" => row["price"],
+     "visit_date" => row["visit_date"]
+   }
+   orders = create("orders", orders_data)
 
-  # genres_data = { "name" => row["genre"] }
-  # genre = find_or_create("genres", genres_data, "name")
+  restaurant_order_data = {
+   "order_id" => orders["id"],
+   "restaurant_id" => restaurant["id"],
+  }
+  restaurant_order = create("restaurant_order", restaurant_order_data)
+  
+  client_data = {
+    "client_name" => row["client_name"],
+    "age" => row["age"],
+    "gender" => row["gender"],
+    "occupation" => row["occupation"],
+    "nationality" => row["nationality"],
+    "restaurant_id" => restaurant["id"]
+  }
+  client = create("client", client_data)
 
-  # books_data = {
-  #   "title" => row["title"],
-  #   "pages" => row["pages"],
-  #   "author_id" => author["id"],
-  #   "publisher_id" => publisher["id"]
-  # }
-  # books = create("books", books_data, "title")
+  client_order_data = {
+    "order_id" => orders["id"],
+    "client_id" => client["id"],
+   }
+   client_order = create("client_order", client_order_data)
 
-  # books_genres_data = { "book_id" => book["id"], "genre_id" => genre["id"] }
-  # find_or_create("books_genres", books_genres_data)
 end

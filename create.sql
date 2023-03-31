@@ -20,7 +20,7 @@ CREATE TABLE orders (
   id SERIAL PRIMARY KEY,
   dish VARCHAR(255) NOT NULL,
   price INTEGER NOT NULL,
-  visit_date INTEGER 
+  visit_date DATE
 );
 
 CREATE TABLE client_order (
