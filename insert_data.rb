@@ -6,7 +6,7 @@ csv_path = ARGV[0] # "books.csv"
 ARGV.clear
 
 # Conectarnos a BBDD booking
-CONN = PG.connect(dbname: "booking")
+CONN = PG.connect(dbname: "insights")
 
 # Crear un metodo que inserte registros unicos en la BBDD
 
