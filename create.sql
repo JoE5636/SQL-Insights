@@ -36,7 +36,7 @@ CREATE TABLE client_order(
 );
 =======
   id SERIAL PRIMARY KEY,
-  restaurant_name VARCHAR(255) NOT NULL UNIQUE,
+  restaurant_name VARCHAR(255) NOT NULL,
   category VARCHAR(255) NOT NULL,
   city VARCHAR(255) NOT NULL,
   address VARCHAR(255) NOT NULL
