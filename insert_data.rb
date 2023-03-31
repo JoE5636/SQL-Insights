@@ -18,24 +18,24 @@ def create(table_name, data)
   result[0]
 end
 
-def find(table_name, data, unique_col)
-  result = CONN.exec("SELECT * FROM #{table_name} WHERE #{unique_col} = '#{data[unique_col].gsub("'", "''")}';")
+# def find(table_name, data, unique_col)
+#   result = CONN.exec("SELECT * FROM #{table_name} WHERE #{unique_col} = '#{data[unique_col].gsub("'", "''")}';")
 
-  result.values.empty? ? nil : result[0]
-end
+#   result.values.empty? ? nil : result[0]
+# end
 
-def find_or_create(table_name, data, unique_col = nil)
-  # Si nos pasan unique_col entonces definimos record, sino queda en nil
-  record = unique_col ? find(table_name, data, unique_col) : nil
+# def find_or_create(table_name, data, unique_col = nil)
+#   # Si nos pasan unique_col entonces definimos record, sino queda en nil
+#   record = unique_col ? find(table_name, data, unique_col) : nil
 
-  # Si record esta definido (quiere decir lo econtramos) entonces lo retornamos, sino lo creamos
-  record || create(table_name, data)
-end
+#   # Si record esta definido (quiere decir lo econtramos) entonces lo retornamos, sino lo creamos
+#   record || create(table_name, data)
+# end
 
 # Leer archivo CSV y crear registros por cada fila
 CSV.foreach(csv_path, headers: true) do |row|
   restaurant_data = {
-    "name" => row["restaurant_name"],
+    "restaurant_name" => row["restaurant_name"],
     "category" => row["category"],
     "city" => row["city"],
     "address" => row["address"]
