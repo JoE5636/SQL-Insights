@@ -22,7 +22,7 @@ class Insights
       when "3"
         puts "execute 3"
       when "4"
-          puts "execute 4"
+          puts top10_visitors
       when "5"
           puts "execute 5"
       when "6"
@@ -77,6 +77,18 @@ class Insights
     create_table(result, "List of dishes")
   end
 
+  def top10_visitors
+    query ="SELECT r.restaurant_name AS name ,COUNT(o.visit_date) AS visitors
+    FROM restaurant AS r
+    JOIN orders AS o ON r.id = o.restaurant_id
+    GROUP BY name
+    ORDER BY visitors DESC
+    LIMIT 10;"
+
+    result = @conn.exec(query)
+    create_table(result, "Top 10 restaurants by visitors")
+  end
+
   def print_welcome
     puts "Welcome to the Restaurants Insights!"
     puts "Write 'menu' at any moment to print the menu again and 'quit' to exit."
@@ -103,6 +115,7 @@ class Insights
     table.title = title
     table.headings = result.fields
     table.rows = result.values
+    table.style = {:all_separators => true}
     table
   end
 
