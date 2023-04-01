@@ -20,7 +20,7 @@ class Insights
       when "2"
         puts dishes_list
       when "3"
-        puts "execute 3"
+        puts clients_percentage(params)
       when "4"
           puts top10_visitors
       when "5"
@@ -28,7 +28,7 @@ class Insights
       when "6"
           puts "execute 6"
       when "7"
-          puts "execute 7"
+          puts average_expense(params)
       when "8"
           puts "execute 8"
       when "9"
@@ -77,6 +77,26 @@ class Insights
     create_table(result, "List of dishes")
   end
 
+
+  def clients_percentage(params)
+    _group, option = params.split("=")
+      column = {
+      "age" => "client.age",
+      "gender" => "client.gender",
+      "occupation" => "client.occupation",
+      "nationality" => "client.nationality"
+      }
+      query = "SELECT #{column[option]}, COUNT(#{column[option]}) AS count, 
+      ROUND(COUNT(#{column[option]}) * 100.0 / SUM(COUNT(*)) OVER(), 2) AS percentage
+      FROM client
+      GROUP BY #{column[option]}
+      ORDER BY #{column[option]};"
+  
+      result = @conn.exec(query)
+      create_table(result, "Number and Distribution of Users")
+  end
+
+
   def top10_visitors
     query ="SELECT r.restaurant_name AS name ,COUNT(o.visit_date) AS visitors
     FROM restaurant AS r
@@ -87,6 +107,30 @@ class Insights
 
     result = @conn.exec(query)
     create_table(result, "Top 10 restaurants by visitors")
+  end
+
+  def average_expense(params)
+   _group, option = params.split("=")
+    column = {
+      "age" => "client.age",
+      "gender" => "client.gender",
+      "occupation" => "client.occupation",
+      "nationality" => "client.nationality"
+    }
+    query = "SELECT #{option}, AVG(total_expense) as avg_expense
+    FROM (
+      SELECT 
+      #{column[option]},
+        SUM(orders.price) as total_expense
+      FROM client
+      JOIN orders ON orders.client_id = client.id
+      GROUP BY #{column[option]}, orders.client_id
+    ) as client_orders
+     GROUP BY #{option}
+     ORDER by #{option};"
+  
+      result = @conn.exec(query)
+      create_table(result, "Average consumer expenses")
   end
 
   def print_welcome
