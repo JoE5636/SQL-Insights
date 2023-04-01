@@ -32,7 +32,7 @@ class Insights
       when "8"
           puts "execute 8"
       when "9" 
-          puts "execute 9"
+          puts lower_price
       when "10"
           puts "execute 10"
       when "menu"
@@ -126,6 +126,23 @@ class Insights
       result = @conn.exec(query)
       create_table(result, "Average consumer expenses")
   end
+
+  def lower_price
+    query = "SELECT subquery.dish, subquery.restaurant_name AS restaurant, subquery.price
+    FROM (
+      SELECT d.dish, r.restaurant_name, o.price,
+             ROW_NUMBER() OVER (PARTITION BY d.dish ORDER BY o.price) AS row_num
+      FROM orders o
+      JOIN restaurant r ON o.restaurant_id = r.id
+      JOIN dishes d ON o.dishes_id = d.id
+    ) AS subquery
+    WHERE subquery.row_num = 1
+    ORDER BY subquery.dish ASC;"
+
+    result = @conn.exec(query)
+    create_table(result, "Best price for dish ")
+  end
+
 
   def print_welcome
     puts "Welcome to the Restaurants Insights!"
