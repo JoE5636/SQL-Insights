@@ -31,10 +31,10 @@ class Insights
           puts "execute 7"
       when "8"
           puts "execute 8"
-      when "9"
+      when "9" 
           puts "execute 9"
       when "10"
-          puts lower_prices
+          puts "execute 10"
       when "menu"
         print_menu
       when "exit"
@@ -87,20 +87,6 @@ class Insights
 
     result = @conn.exec(query)
     create_table(result, "Top 10 restaurants by visitors")
-  end
-
-  def lower_prices
-    query ="SELECT DISTINCT d.dish AS dish, r.restaurant_name AS restaurant ,o.price AS price
-    FROM orders AS o
-    JOIN restaurant AS r ON r.id = o.restaurant_id
-    JOIN dishes AS d ON d.id = o.dishes_id
-    WHERE price = (
-    SELECT MIN(price) 
-    FROM orders )
-    ORDER BY dish ASC;"
-
-    result = @conn.exec(query)
-    create_table(result, " Best price for dish ")
   end
 
   def print_welcome
