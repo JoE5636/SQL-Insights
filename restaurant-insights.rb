@@ -18,23 +18,23 @@ class Insights
       when "1"
         puts search_restaurants(params)
       when "2"
-        puts "execute 2"
+        puts dishes_list
       when "3"
         puts "execute 3"
-    when "4"
-        puts "execute 4"
-    when "5"
-        puts "execute 5"
-    when "6"
-        puts "execute 6"
-    when "7"
-        puts "execute 7"
-    when "8"
-        puts "execute 8"
-    when "9"
-        puts "execute 9"
-    when "10"
-        puts "execute 10"
+      when "4"
+          puts "execute 4"
+      when "5"
+          puts "execute 5"
+      when "6"
+          puts "execute 6"
+      when "7"
+          puts "execute 7"
+      when "8"
+          puts "execute 8"
+      when "9"
+          puts "execute 9"
+      when "10"
+          puts "execute 10"
       when "menu"
         print_menu
       when "exit"
@@ -66,6 +66,15 @@ class Insights
       result = @conn.exec(query)
       create_table(result, "List of restaurants")
     end
+  end
+
+  def dishes_list
+    query = "SELECT DISTINCT dish AS name 
+            FROM dishes 
+            ORDER BY dish;"
+
+    result = @conn.exec(query)
+    create_table(result, "List of dishes")
   end
 
   def print_welcome

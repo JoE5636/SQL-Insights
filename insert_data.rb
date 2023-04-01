@@ -56,7 +56,7 @@ CSV.foreach(csv_path, headers: true) do |row|
   dishes_data = {
     "dish" => row["dish"]    
   }
-  dishes = find_or_create("dishes", dishes_data, "dish")
+  dishes = find_or_create("dishes", dishes_data)
     
   orders_data = {
     "restaurant_id" => restaurant["id"],
