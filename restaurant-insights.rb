@@ -117,17 +117,11 @@ class Insights
       "occupation" => "client.occupation",
       "nationality" => "client.nationality"
     }
-    query = "SELECT #{option}, AVG(total_expense) as avg_expense
-    FROM (
-      SELECT 
-      #{column[option]},
-        SUM(orders.price) as total_expense
-      FROM client
-      JOIN orders ON orders.client_id = client.id
-      GROUP BY #{column[option]}, orders.client_id
-    ) as client_orders
-     GROUP BY #{option}
-     ORDER by #{option};"
+    query = "SELECT #{option}, ROUND(AVG(orders.price),2) as avg_expense
+    FROM client
+    JOIN orders ON orders.client_id = client.id
+    GROUP BY #{column[option]}
+   ORDER by #{option};"
   
       result = @conn.exec(query)
       create_table(result, "Average consumer expenses")
