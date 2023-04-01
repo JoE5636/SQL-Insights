@@ -16,9 +16,9 @@ class Insights
 
       case option
       when "1"
-        puts "execute 1"
-      when "2"
         puts search_restaurants(params)
+      when "2"
+        puts "execute 2"
       when "3"
         puts "execute 3"
     when "4"
@@ -48,7 +48,7 @@ class Insights
   def search_restaurants(params)
     # title=ring | author=prof | publisher=mac -> field=term
   
-    if params = "2"
+    if params = "1"
       query= "SELECT r.id,r.restaurant_name,r.category,r.city
       FROM restaurant AS r"
       result = @conn.exec(query)
@@ -67,7 +67,6 @@ class Insights
       create_table(result, "List of restaurants")
     end
   end
-
 
   def print_welcome
     puts "Welcome to the Restaurants Insights!"
