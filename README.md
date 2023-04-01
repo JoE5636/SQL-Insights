@@ -68,7 +68,7 @@ CREATE TABLE
 CREATE TABLE
 ...
 CREATE TABLE
-$ 
+$
 ```
 
 Include the `create.sql` file on your solution.
@@ -116,7 +116,7 @@ Write 'menu' at any moment to print the menu again and 'quit' to exit.
 2. List of unique dishes included in the research
 3. Number and distribution (%) of clients by [group=[age | gender | occupation | nationality]]
 4. Top 10 restaurants by the number of visitors.
-5. Top 10 restaurants by the sum of sales.
+5. Top 10 restaurants by the sum  of sales.
 6. Top 10 restaurants by the average expense of their clients.
 7. The average consumer expense group by [group=[age | gender | occupation | nationality]]
 8. The total sales of all the restaurants group by month [order=[asc | desc]]
