@@ -34,7 +34,7 @@ class Insights
       when "9" 
           puts lower_price
       when "10"
-          puts "execute 10"
+          puts fovorite_dish(params)
       when "menu"
         print_menu
       when "exit"
@@ -44,6 +44,24 @@ class Insights
       end
     end
   end
+
+ 
+  def fovorite_dish(params)
+    field, term = params.split("=")
+
+    query = "SELECT CONCAT(#{field}, '') AS #{field}, d.dish AS \"Favorite dish\", COUNT(*) AS count
+    FROM orders o
+    JOIN dishes d ON d.id = o.dishes_id
+    JOIN client c ON c.id = o.client_id
+    WHERE c.#{field} ='#{term}'
+    GROUP BY #{field}, d.dish
+    ORDER BY count DESC
+    LIMIT 1;"
+
+    result = @conn.exec(query)
+    create_table(result, "List of dishes")
+  end
+
   
   def search_restaurants(params)
     # title=ring | author=prof | publisher=mac -> field=term
