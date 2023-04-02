@@ -24,13 +24,13 @@ class Insights
       when "4"
           puts top10_visitors
       when "5"
-          puts "execute 5"
+          puts top_restaurants
       when "6"
-          puts "execute 6"
+          puts top_avg_expense
       when "7"
           puts average_expense(params)
       when "8"
-          puts "execute 8"
+          puts sales_by_month(params)
       when "9" 
           puts lower_price
       when "10"
@@ -109,6 +109,30 @@ class Insights
     create_table(result, "Top 10 restaurants by visitors")
   end
 
+  def top_restaurants
+    query = "SELECT restaurant_name, SUM(price) AS sales
+            FROM orders AS o
+            JOIN restaurant AS r ON o.restaurant_id = r.id
+            GROUP BY restaurant_name
+            ORDER BY sales DESC
+            LIMIT 10;"
+
+    result = @conn.exec(query)
+    create_table(result, "Top 10 restaurants by sales")
+  end
+
+  def top_avg_expense
+    query = "SELECT restaurant_name, ROUND(AVG(price),1) AS expense
+            FROM orders AS o
+            JOIN restaurant AS r ON o.restaurant_id = r.id
+            GROUP BY restaurant_name
+            ORDER BY expense DESC
+            LIMIT 10;"
+
+    result = @conn.exec(query)
+    create_table(result, "Top 10 restaurants by average expense per user")
+  end
+
   def average_expense(params)
    _group, option = params.split("=")
     column = {
@@ -143,6 +167,18 @@ class Insights
     create_table(result, "Best price for dish ")
   end
 
+  def sales_by_month(params)
+    order, option = params.split("=")
+
+    query = "SELECT TO_CHAR(o.visit_date, 'MONTH') AS month, SUM(price) AS sales
+            FROM orders AS o
+            GROUP BY month
+            ORDER BY sales #{option};"
+    
+    result = @conn.exec(query)
+    create_table(result, "Total sales by month")
+
+  end
 
   def print_welcome
     puts "Welcome to the Restaurants Insights!"
