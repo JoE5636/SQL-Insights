@@ -10,18 +10,16 @@ CONN = PG.connect(dbname: "insights")
 
 # Crear un metodo que inserte registros unicos en la BBDD
 
-# Crear un metodo que inserte registros unicos en la BBDD
-
 def create(table_name, data)
   sql = "INSERT INTO #{table_name} (#{data.keys.join(', ')})
-  VALUES (#{data.values.map { |v| "'#{v}'" }.join(', ')}) RETURNING *;"
+  VALUES (#{data.values.map { |v| "'#{v.gsub("'", "''")}'" }.join(', ')}) RETURNING *;"
 
   result = CONN.exec(sql)
   result[0]
 end
 
 def find(table_name, data, unique_col)
-  result = CONN.exec("SELECT * FROM #{table_name} WHERE #{unique_col} = '#{data[unique_col]}';")
+  result = CONN.exec("SELECT * FROM #{table_name} WHERE #{unique_col} = '#{data[unique_col].gsub("'", "''")}';")
 
   result.values.empty? ? nil : result[0]
 end
